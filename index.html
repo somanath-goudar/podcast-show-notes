@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Podcast Show Notes Formatter — Free Generator for WordPress, Substack & Spotify</title>
+  <meta name="description" content="Free podcast show notes generator. Fill in your episode details and instantly get show notes in HTML (WordPress), Markdown (Substack/Ghost), and Plain Text (Spotify/Apple Podcasts) formats." />
+  <link rel="canonical" href="https://podcast-show-notes.vercel.app/" />
+  <meta property="og:title" content="Podcast Show Notes Formatter — Free Generator" />
+  <meta property="og:description" content="Generate podcast show notes in HTML, Markdown, and Plain Text simultaneously. No account needed." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://podcast-show-notes.vercel.app/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Podcast Show Notes Formatter — Free Generator" />
+  <meta name="twitter:description" content="Generate podcast show notes in HTML, Markdown, and Plain Text simultaneously. Perfect for WordPress, Substack, Ghost, Spotify, and Apple Podcasts." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Podcast Show Notes Formatter",
+    "url": "https://podcast-show-notes.vercel.app/",
+    "description": "Free podcast show notes generator. Instantly format show notes in HTML, Markdown, and Plain Text for any publishing platform.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "featureList": [
+      "HTML output for WordPress",
+      "Markdown output for Substack and Ghost",
+      "Plain text output for Spotify and Apple Podcasts",
+      "Timestamp chapters",
+      "Guest links",
+      "Resource links",
+      "Reusable CTA templates",
+      "Copy to clipboard"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://podcast-show-notes.vercel.app/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a podcast show notes formatter?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A podcast show notes formatter takes your episode details — guest info, topics, timestamps, and resources — and formats them into ready-to-paste show notes for your publishing platform." }
+      },
+      {
+        "@type": "Question",
+        "name": "What platforms does this show notes generator support?",
+        "acceptedAnswer": { "@type": "Answer", "text": "It generates show notes in three formats simultaneously: HTML for WordPress, Markdown for Substack and Ghost, and Plain Text for Spotify and Apple Podcasts." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to create an account to use this tool?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. The tool is completely free and requires no account. Your data is saved in your browser's local storage only." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I save my intro and CTA as a template?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Click 'Save as Template' to store your intro and CTA in local storage. They will be pre-filled automatically next time you visit." }
+      },
+      {
+        "@type": "Question",
+        "name": "What are podcast show notes timestamps?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Timestamps are chapter markers like [00:00] Intro, [05:30] Guest background, that help listeners navigate to specific parts of your episode." }
+      },
+      {
+        "@type": "Question",
+        "name": "How long should podcast show notes be?",
+        "acceptedAnswer": { "@type": "Answer", "text": "For SEO, aim for 300–500 words minimum. Include the guest name, key topics, timestamps, and resource links. Longer notes with transcripts can rank even better." }
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a24;
+      --surface2: #22222f;
+      --border: #2e2e42;
+      --accent: #7c6af7;
+      --accent2: #06b6d4;
+      --accent3: #10b981;
+      --text: #e8e8f0;
+      --text2: #9898b0;
+      --html-color: #f97316;
+      --md-color: #7c6af7;
+      --txt-color: #06b6d4;
+      --radius: 10px;
+      --radius-sm: 6px;
+      --font: 'Inter', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 1rem;
+      text-align: center;
+    }
+    header h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 0.5rem; }
+    header h1 span { color: var(--accent); }
+    header p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+    .badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+    .badge {
+      padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+    }
+    .badge-html { background: rgba(249,115,22,0.15); color: var(--html-color); border: 1px solid rgba(249,115,22,0.3); }
+    .badge-md { background: rgba(124,106,247,0.15); color: var(--md-color); border: 1px solid rgba(124,106,247,0.3); }
+    .badge-txt { background: rgba(6,182,212,0.15); color: var(--txt-color); border: 1px solid rgba(6,182,212,0.3); }
+
+    /* Main layout */
+    main { max-width: 1400px; margin: 0 auto; padding: 2rem 1rem; }
+    .workspace { display: grid; grid-template-columns: 480px 1fr; gap: 1.5rem; }
+    @media (max-width: 1024px) { .workspace { grid-template-columns: 1fr; } }
+
+    /* Form Panel */
+    .form-panel { display: flex; flex-direction: column; gap: 1rem; }
+    .section-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+    }
+    .section-title {
+      font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.8rem; font-weight: 600; color: var(--text2); }
+    input[type="text"], input[type="url"], input[type="number"], textarea, select {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text);
+      padding: 0.6rem 0.75rem; font-size: 0.9rem; font-family: inherit;
+      width: 100%; transition: border-color 0.2s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+    .hint { font-size: 0.72rem; color: var(--text2); }
+
+    /* Dynamic list items */
+    .dynamic-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .dynamic-item { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; align-items: center; }
+    .dynamic-item.two-col { grid-template-columns: 1fr 1fr auto; }
+    .dynamic-item.three-col { grid-template-columns: auto 1fr auto; gap: 0.5rem; }
+    .remove-btn {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+      color: #ef4444; border-radius: var(--radius-sm); padding: 0.4rem 0.6rem;
+      cursor: pointer; font-size: 0.8rem; line-height: 1; white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .remove-btn:hover { background: rgba(239,68,68,0.25); }
+    .add-btn {
+      background: rgba(124,106,247,0.1); border: 1px dashed rgba(124,106,247,0.4);
+      color: var(--accent); border-radius: var(--radius-sm); padding: 0.5rem 1rem;
+      cursor: pointer; font-size: 0.82rem; font-weight: 600; width: 100%;
+      margin-top: 0.25rem; transition: background 0.2s;
+    }
+    .add-btn:hover { background: rgba(124,106,247,0.2); }
+
+    /* Template controls */
+    .template-bar {
+      display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .tpl-btn {
+      padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.78rem;
+      font-weight: 600; cursor: pointer; border: 1px solid; transition: all 0.2s;
+    }
+    .tpl-save { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.4); color: #10b981; }
+    .tpl-save:hover { background: rgba(16,185,129,0.25); }
+    .tpl-load { background: rgba(6,182,212,0.1); border-color: rgba(6,182,212,0.4); color: var(--txt-color); }
+    .tpl-load:hover { background: rgba(6,182,212,0.25); }
+    .tpl-clear { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; }
+    .tpl-clear:hover { background: rgba(239,68,68,0.25); }
+    .tpl-status { font-size: 0.75rem; color: var(--accent3); margin-left: auto; }
+
+    /* Generate button */
+    .generate-btn {
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      border: none; border-radius: var(--radius); color: #fff;
+      padding: 1rem; font-size: 1rem; font-weight: 700; cursor: pointer;
+      width: 100%; transition: opacity 0.2s, transform 0.1s;
+    }
+    .generate-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .generate-btn:active { transform: translateY(0); }
+
+    /* Output Panel */
+    .output-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+    .output-block {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .output-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border);
+    }
+    .format-icon { font-size: 1.1rem; }
+    .format-label { font-weight: 700; font-size: 0.95rem; flex: 1; }
+    .format-label.html { color: var(--html-color); }
+    .format-label.md { color: var(--md-color); }
+    .format-label.txt { color: var(--txt-color); }
+    .platform-tags { font-size: 0.7rem; color: var(--text2); }
+    .copy-btn {
+      padding: 0.4rem 1rem; border-radius: var(--radius-sm); font-size: 0.8rem;
+      font-weight: 600; cursor: pointer; border: 1px solid; transition: all 0.2s;
+    }
+    .copy-btn.html { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.4); color: var(--html-color); }
+    .copy-btn.html:hover { background: rgba(249,115,22,0.25); }
+    .copy-btn.md { background: rgba(124,106,247,0.1); border-color: rgba(124,106,247,0.4); color: var(--md-color); }
+    .copy-btn.md:hover { background: rgba(124,106,247,0.25); }
+    .copy-btn.txt { background: rgba(6,182,212,0.1); border-color: rgba(6,182,212,0.4); color: var(--txt-color); }
+    .copy-btn.txt:hover { background: rgba(6,182,212,0.25); }
+    .copy-btn.copied { background: rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.5); color: #10b981; }
+    .output-content {
+      padding: 1.25rem;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.8rem; line-height: 1.7; color: var(--text2);
+      white-space: pre-wrap; word-break: break-word;
+      max-height: 340px; overflow-y: auto;
+      background: var(--bg);
+    }
+    .output-content.empty {
+      color: var(--text2); font-family: var(--font); font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 120px; text-align: center;
+    }
+
+    /* Word count row */
+    .output-meta {
+      display: flex; gap: 1rem; padding: 0.6rem 1.25rem;
+      border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--text2);
+    }
+    .meta-item strong { color: var(--text); }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--accent3); color: #fff;
+      padding: 0.6rem 1.25rem; border-radius: var(--radius-sm);
+      font-size: 0.85rem; font-weight: 600;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    #toast.show { opacity: 1; }
+
+    /* How it works */
+    .how-section { margin: 3rem 0 2rem; }
+    .how-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .step {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem; text-align: center;
+    }
+    .step-num { font-size: 1.8rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 0.5rem; }
+    .step-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; }
+    .step-desc { font-size: 0.82rem; color: var(--text2); }
+
+    /* FAQ */
+    .faq-section { margin: 2rem 0; }
+    .faq-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 1rem 0; cursor: pointer; }
+    .faq-q {
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: 600; font-size: 0.95rem;
+    }
+    .faq-q .chevron { color: var(--accent); transition: transform 0.2s; font-size: 1.1rem; }
+    .faq-item.open .chevron { transform: rotate(180deg); }
+    .faq-a { color: var(--text2); font-size: 0.88rem; line-height: 1.7; margin-top: 0.6rem; display: none; }
+    .faq-item.open .faq-a { display: block; }
+
+    footer {
+      text-align: center; padding: 2rem; border-top: 1px solid var(--border);
+      color: var(--text2); font-size: 0.82rem; margin-top: 2rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Podcast Show Notes <span>Formatter</span></h1>
+  <p>Fill in your episode details and get ready-to-paste show notes for every platform — instantly.</p>
+  <div class="badges">
+    <span class="badge badge-html">HTML · WordPress</span>
+    <span class="badge badge-md">Markdown · Substack · Ghost</span>
+    <span class="badge badge-txt">Plain Text · Spotify · Apple</span>
+  </div>
+</header>
+
+<main>
+  <div class="workspace">
+
+    <!-- ===== FORM PANEL ===== -->
+    <div class="form-panel">
+
+      <!-- Episode basics -->
+      <div class="section-card">
+        <div class="section-title">Episode Info</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ep-num">Episode Number</label>
+            <input type="number" id="ep-num" placeholder="42" min="1" />
+          </div>
+          <div class="form-group">
+            <label for="ep-title">Episode Title *</label>
+            <input type="text" id="ep-title" placeholder="How to Launch a Podcast in 30 Days" />
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:0.75rem">
+          <div class="form-group full">
+            <label for="ep-summary">Episode Summary *</label>
+            <textarea id="ep-summary" rows="3" placeholder="A short 2–3 sentence overview of what this episode covers. This appears at the top of your show notes."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guest info -->
+      <div class="section-card">
+        <div class="section-title">Guest Details (optional)</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="guest-name">Guest Name</label>
+            <input type="text" id="guest-name" placeholder="Jane Smith" />
+          </div>
+          <div class="form-group">
+            <label for="guest-title">Guest Title / Role</label>
+            <input type="text" id="guest-title" placeholder="CEO of Acme Corp" />
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:0.75rem">
+          <label for="guest-website">Guest Website</label>
+          <input type="url" id="guest-website" placeholder="https://janesmith.com" />
+        </div>
+        <div class="form-group" style="margin-top:0.75rem">
+          <label>Guest Social / Other Links</label>
+          <div class="dynamic-list" id="guest-links-list"></div>
+          <button class="add-btn" onclick="addGuestLink()">+ Add Link</button>
+        </div>
+      </div>
+
+      <!-- Topics -->
+      <div class="section-card">
+        <div class="section-title">Topics Covered (up to 8)</div>
+        <div class="dynamic-list" id="topics-list"></div>
+        <button class="add-btn" onclick="addTopic()">+ Add Topic</button>
+      </div>
+
+      <!-- Timestamps -->
+      <div class="section-card">
+        <div class="section-title">Timestamps / Chapters (optional)</div>
+        <span class="hint" style="display:block;margin-bottom:0.75rem">Format: HH:MM or MM:SS — e.g. 05:30</span>
+        <div class="dynamic-list" id="timestamps-list"></div>
+        <button class="add-btn" onclick="addTimestamp()">+ Add Timestamp</button>
+      </div>
+
+      <!-- Resources -->
+      <div class="section-card">
+        <div class="section-title">Resources Mentioned (up to 6)</div>
+        <div class="dynamic-list" id="resources-list"></div>
+        <button class="add-btn" onclick="addResource()">+ Add Resource</button>
+      </div>
+
+      <!-- Intro / CTA templates -->
+      <div class="section-card">
+        <div class="section-title">Intro & Call-to-Action</div>
+        <div class="template-bar">
+          <button class="tpl-btn tpl-save" onclick="saveTemplate()">Save as Template</button>
+          <button class="tpl-btn tpl-load" onclick="loadTemplate()">Load Template</button>
+          <button class="tpl-btn tpl-clear" onclick="clearTemplate()">Clear Template</button>
+          <span class="tpl-status" id="tpl-status"></span>
+        </div>
+        <div class="form-group">
+          <label for="ep-intro">Show Intro (optional)</label>
+          <textarea id="ep-intro" rows="2" placeholder="Welcome to [Your Podcast]! If you enjoy this episode, please subscribe and leave a review..."></textarea>
+        </div>
+        <div class="form-group" style="margin-top:0.75rem">
+          <label for="ep-cta">Call to Action *</label>
+          <textarea id="ep-cta" rows="2" placeholder="Subscribe on Spotify and Apple Podcasts. Follow us @yourpodcast on Twitter. Leave a 5-star review!"></textarea>
+        </div>
+      </div>
+
+      <button class="generate-btn" onclick="generate()">Generate Show Notes →</button>
+    </div>
+
+    <!-- ===== OUTPUT PANEL ===== -->
+    <div class="output-panel">
+
+      <!-- HTML output -->
+      <div class="output-block">
+        <div class="output-header">
+          <span class="format-icon">🌐</span>
+          <div>
+            <div class="format-label html">HTML</div>
+            <div class="platform-tags">WordPress · Squarespace · Wix · Any CMS</div>
+          </div>
+          <button class="copy-btn html" onclick="copyOutput('html')">Copy HTML</button>
+        </div>
+        <pre class="output-content empty" id="output-html">← Fill in the form and click Generate</pre>
+        <div class="output-meta" id="meta-html" style="display:none">
+          <span>Words: <strong id="words-html">0</strong></span>
+          <span>Characters: <strong id="chars-html">0</strong></span>
+        </div>
+      </div>
+
+      <!-- Markdown output -->
+      <div class="output-block">
+        <div class="output-header">
+          <span class="format-icon">✍️</span>
+          <div>
+            <div class="format-label md">Markdown</div>
+            <div class="platform-tags">Substack · Ghost · Notion · GitHub</div>
+          </div>
+          <button class="copy-btn md" onclick="copyOutput('md')">Copy Markdown</button>
+        </div>
+        <pre class="output-content empty" id="output-md">← Fill in the form and click Generate</pre>
+        <div class="output-meta" id="meta-md" style="display:none">
+          <span>Words: <strong id="words-md">0</strong></span>
+          <span>Characters: <strong id="chars-md">0</strong></span>
+        </div>
+      </div>
+
+      <!-- Plain text output -->
+      <div class="output-block">
+        <div class="output-header">
+          <span class="format-icon">📄</span>
+          <div>
+            <div class="format-label txt">Plain Text</div>
+            <div class="platform-tags">Spotify · Apple Podcasts · RSS · Email</div>
+          </div>
+          <button class="copy-btn txt" onclick="copyOutput('txt')">Copy Plain Text</button>
+        </div>
+        <pre class="output-content empty" id="output-txt">← Fill in the form and click Generate</pre>
+        <div class="output-meta" id="meta-txt" style="display:none">
+          <span>Words: <strong id="words-txt">0</strong></span>
+          <span>Characters: <strong id="chars-txt">0</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="how-section">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Enter Episode Details</div>
+        <div class="step-desc">Fill in your episode title, number, guest info, topics, timestamps, and resources.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Add Your CTA</div>
+        <div class="step-desc">Write your call-to-action and intro once, then save it as a reusable template for future episodes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Click Generate</div>
+        <div class="step-desc">Instantly get show notes in all three formats — HTML, Markdown, and Plain Text — side by side.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Copy & Paste</div>
+        <div class="step-desc">Click the Copy button for your platform and paste directly into WordPress, Substack, Spotify, or Apple Podcasts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">What is a podcast show notes formatter? <span class="chevron">▾</span></div>
+      <div class="faq-a">A podcast show notes formatter takes your episode details — guest info, topics, timestamps, and resources — and formats them into ready-to-paste show notes for your publishing platform.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">What platforms does this show notes generator support? <span class="chevron">▾</span></div>
+      <div class="faq-a">It generates show notes in three formats simultaneously: HTML for WordPress and other CMS platforms, Markdown for Substack and Ghost, and Plain Text for Spotify and Apple Podcasts description fields.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Do I need to create an account to use this tool? <span class="chevron">▾</span></div>
+      <div class="faq-a">No. The tool is completely free and requires no account or sign-up. Your template data is saved in your browser&apos;s local storage only — nothing leaves your device.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Can I save my intro and CTA as a template? <span class="chevron">▾</span></div>
+      <div class="faq-a">Yes! Click &apos;Save as Template&apos; to store your show intro and call-to-action in local storage. They will be pre-filled automatically the next time you open the tool — perfect for recurring podcast formats.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">What are podcast show notes timestamps? <span class="chevron">▾</span></div>
+      <div class="faq-a">Timestamps are chapter markers — like [00:00] Intro, [05:30] Guest background — that help listeners navigate to specific parts of your episode. Spotify and Apple Podcasts display clickable chapter links when timestamps are included.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">How long should podcast show notes be? <span class="chevron">▾</span></div>
+      <div class="faq-a">For SEO, aim for 300–500 words minimum. Include the guest name, key topics, timestamps, and resource links. Longer show notes with a partial or full transcript can rank significantly better in search engines.</div>
+    </div>
+  </div>
+</main>
+
+<div id="toast">Copied to clipboard!</div>
+
+<footer>
+  <p>&copy; 2026 Podcast Show Notes Formatter &mdash; Free forever, no account needed.</p>
+  <p style="margin-top:0.35rem"><a href="privacy.html">Privacy Policy</a> &nbsp;&middot;&nbsp; <a href="terms.html">Terms of Use</a></p>
+</footer>
+
+<script>
+  // ─── State ───────────────────────────────────────────
+  let outputs = { html: '', md: '', txt: '' };
+
+  // ─── Init ────────────────────────────────────────────
+  function init() {
+    const epNum = document.getElementById('ep-num');
+    const epTitle = document.getElementById('ep-title');
+    if (!epNum || !epTitle) return;
+
+    // seed one row each for topics / timestamps / resources / guest links
+    addTopic('', true);
+    addTopic('', true);
+    addTimestamp('', '', true);
+    addResource('', '', true);
+    addGuestLink('', true);
+
+    // auto-load template if exists
+    const tpl = getTemplate();
+    if (tpl) {
+      document.getElementById('ep-intro').value = tpl.intro || '';
+      document.getElementById('ep-cta').value = tpl.cta || '';
+      showTplStatus('Template loaded');
+    }
+  }
+
+  // ─── Dynamic rows ─────────────────────────────────────
+  let topicCount = 0, tsCount = 0, resCount = 0, glCount = 0;
+
+  function addTopic(val, silent) {
+    if (topicCount >= 8) { if (!silent) showToast('Maximum 8 topics'); return; }
+    topicCount++;
+    const id = 'topic-' + topicCount;
+    const div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.innerHTML = '<input type="text" id="' + id + '" placeholder="Topic ' + topicCount + '" value="' + escAttr(val || '') + '" />'
+      + '<button class="remove-btn" onclick="removeRow(this, \'topic\')">✕</button>';
+    document.getElementById('topics-list').appendChild(div);
+  }
+
+  function addTimestamp(time, label, silent) {
+    if (tsCount >= 20) { if (!silent) showToast('Maximum 20 timestamps'); return; }
+    tsCount++;
+    const div = document.createElement('div');
+    div.className = 'dynamic-item three-col';
+    div.innerHTML = '<input type="text" placeholder="00:00" style="width:90px" value="' + escAttr(time || '') + '" />'
+      + '<input type="text" placeholder="Chapter label" value="' + escAttr(label || '') + '" />'
+      + '<button class="remove-btn" onclick="removeRow(this, \'ts\')">✕</button>';
+    document.getElementById('timestamps-list').appendChild(div);
+  }
+
+  function addResource(name, url, silent) {
+    if (resCount >= 6) { if (!silent) showToast('Maximum 6 resources'); return; }
+    resCount++;
+    const div = document.createElement('div');
+    div.className = 'dynamic-item two-col';
+    div.innerHTML = '<input type="text" placeholder="Resource name" value="' + escAttr(name || '') + '" />'
+      + '<input type="url" placeholder="https://..." value="' + escAttr(url || '') + '" />'
+      + '<button class="remove-btn" onclick="removeRow(this, \'res\')">✕</button>';
+    document.getElementById('resources-list').appendChild(div);
+  }
+
+  function addGuestLink(val, silent) {
+    if (glCount >= 5) { if (!silent) showToast('Maximum 5 guest links'); return; }
+    glCount++;
+    const div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.innerHTML = '<input type="url" placeholder="https://twitter.com/guest" value="' + escAttr(val || '') + '" />'
+      + '<button class="remove-btn" onclick="removeRow(this, \'gl\')">✕</button>';
+    document.getElementById('guest-links-list').appendChild(div);
+  }
+
+  function removeRow(btn, type) {
+    btn.parentElement.remove();
+    if (type === 'topic') topicCount = Math.max(0, topicCount - 1);
+    else if (type === 'ts') tsCount = Math.max(0, tsCount - 1);
+    else if (type === 'res') resCount = Math.max(0, resCount - 1);
+    else if (type === 'gl') glCount = Math.max(0, glCount - 1);
+  }
+
+  // ─── Template persistence ─────────────────────────────
+  const TPL_KEY = 'podcast-sn-template';
+
+  function getTemplate() {
+    try { return JSON.parse(localStorage.getItem(TPL_KEY)); } catch(e) { return null; }
+  }
+
+  function saveTemplate() {
+    const tpl = {
+      intro: document.getElementById('ep-intro').value.trim(),
+      cta: document.getElementById('ep-cta').value.trim()
+    };
+    localStorage.setItem(TPL_KEY, JSON.stringify(tpl));
+    showTplStatus('Template saved!');
+  }
+
+  function loadTemplate() {
+    const tpl = getTemplate();
+    if (!tpl) { showTplStatus('No template saved yet'); return; }
+    document.getElementById('ep-intro').value = tpl.intro || '';
+    document.getElementById('ep-cta').value = tpl.cta || '';
+    showTplStatus('Template loaded');
+  }
+
+  function clearTemplate() {
+    localStorage.removeItem(TPL_KEY);
+    document.getElementById('ep-intro').value = '';
+    document.getElementById('ep-cta').value = '';
+    showTplStatus('Template cleared');
+  }
+
+  function showTplStatus(msg) {
+    const el = document.getElementById('tpl-status');
+    if (!el) return;
+    el.textContent = msg;
+    setTimeout(() => { el.textContent = ''; }, 3000);
+  }
+
+  // ─── Collect form data ────────────────────────────────
+  function collect() {
+    const epNum = (document.getElementById('ep-num').value || '').trim();
+    const epTitle = (document.getElementById('ep-title').value || '').trim();
+    const summary = (document.getElementById('ep-summary').value || '').trim();
+    const guestName = (document.getElementById('guest-name').value || '').trim();
+    const guestTitleVal = (document.getElementById('guest-title').value || '').trim();
+    const guestWebsite = (document.getElementById('guest-website').value || '').trim();
+    const intro = (document.getElementById('ep-intro').value || '').trim();
+    const cta = (document.getElementById('ep-cta').value || '').trim();
+
+    const topics = Array.from(document.getElementById('topics-list').querySelectorAll('input'))
+      .map(i => i.value.trim()).filter(Boolean);
+
+    const tsList = document.getElementById('timestamps-list').querySelectorAll('.dynamic-item');
+    const timestamps = Array.from(tsList).map(row => {
+      const inputs = row.querySelectorAll('input');
+      return { time: (inputs[0] ? inputs[0].value.trim() : ''), label: (inputs[1] ? inputs[1].value.trim() : '') };
+    }).filter(t => t.time && t.label);
+
+    const resList = document.getElementById('resources-list').querySelectorAll('.dynamic-item');
+    const resources = Array.from(resList).map(row => {
+      const inputs = row.querySelectorAll('input');
+      return { name: (inputs[0] ? inputs[0].value.trim() : ''), url: (inputs[1] ? inputs[1].value.trim() : '') };
+    }).filter(r => r.name);
+
+    const guestLinks = Array.from(document.getElementById('guest-links-list').querySelectorAll('input'))
+      .map(i => i.value.trim()).filter(Boolean);
+
+    return { epNum, epTitle, summary, guestName, guestTitleVal, guestWebsite, intro, cta, topics, timestamps, resources, guestLinks };
+  }
+
+  // ─── Generators ───────────────────────────────────────
+  function buildTitle(d) {
+    if (d.epNum) return 'Episode ' + d.epNum + ': ' + d.epTitle;
+    return d.epTitle;
+  }
+
+  function generateHTML(d) {
+    if (!d.epTitle) return '';
+    const title = buildTitle(d);
+    let h = '';
+    h += '<h2>' + esc(title) + '</h2>\n\n';
+    if (d.intro) h += '<p>' + esc(d.intro) + '</p>\n\n';
+    if (d.summary) h += '<p>' + esc(d.summary) + '</p>\n\n';
+
+    if (d.guestName) {
+      h += '<h3>About the Guest</h3>\n<p>';
+      h += '<strong>' + esc(d.guestName) + '</strong>';
+      if (d.guestTitleVal) h += ' &mdash; ' + esc(d.guestTitleVal);
+      if (d.guestWebsite) h += '<br /><a href="' + escAttr(d.guestWebsite) + '" target="_blank" rel="noopener noreferrer">' + esc(d.guestWebsite) + '</a>';
+      if (d.guestLinks.length) {
+        h += '<br />' + d.guestLinks.map(l => '<a href="' + escAttr(l) + '" target="_blank" rel="noopener noreferrer">' + esc(l) + '</a>').join(' &nbsp;|&nbsp; ');
+      }
+      h += '</p>\n\n';
+    }
+
+    if (d.topics.length) {
+      h += '<h3>What We Cover</h3>\n<ul>\n';
+      d.topics.forEach(t => { h += '  <li>' + esc(t) + '</li>\n'; });
+      h += '</ul>\n\n';
+    }
+
+    if (d.timestamps.length) {
+      h += '<h3>Episode Timestamps</h3>\n<ul>\n';
+      d.timestamps.forEach(t => { h += '  <li><strong>' + esc(t.time) + '</strong> &mdash; ' + esc(t.label) + '</li>\n'; });
+      h += '</ul>\n\n';
+    }
+
+    if (d.resources.length) {
+      h += '<h3>Resources Mentioned</h3>\n<ul>\n';
+      d.resources.forEach(r => {
+        if (r.url) h += '  <li><a href="' + escAttr(r.url) + '" target="_blank" rel="noopener noreferrer">' + esc(r.name) + '</a></li>\n';
+        else h += '  <li>' + esc(r.name) + '</li>\n';
+      });
+      h += '</ul>\n\n';
+    }
+
+    if (d.cta) h += '<h3>Enjoyed This Episode?</h3>\n<p>' + esc(d.cta) + '</p>\n';
+    return h.trim();
+  }
+
+  function generateMarkdown(d) {
+    if (!d.epTitle) return '';
+    const title = buildTitle(d);
+    let m = '';
+    m += '## ' + title + '\n\n';
+    if (d.intro) m += d.intro + '\n\n';
+    if (d.summary) m += d.summary + '\n\n';
+
+    if (d.guestName) {
+      m += '### About the Guest\n\n';
+      m += '**' + d.guestName + '**';
+      if (d.guestTitleVal) m += ' — ' + d.guestTitleVal;
+      m += '\n';
+      if (d.guestWebsite) m += '[' + d.guestWebsite + '](' + d.guestWebsite + ')\n';
+      if (d.guestLinks.length) {
+        d.guestLinks.forEach(l => { m += '[' + l + '](' + l + ')\n'; });
+      }
+      m += '\n';
+    }
+
+    if (d.topics.length) {
+      m += '### What We Cover\n\n';
+      d.topics.forEach(t => { m += '- ' + t + '\n'; });
+      m += '\n';
+    }
+
+    if (d.timestamps.length) {
+      m += '### Episode Timestamps\n\n';
+      d.timestamps.forEach(t => { m += '- **' + t.time + '** — ' + t.label + '\n'; });
+      m += '\n';
+    }
+
+    if (d.resources.length) {
+      m += '### Resources Mentioned\n\n';
+      d.resources.forEach(r => {
+        if (r.url) m += '- [' + r.name + '](' + r.url + ')\n';
+        else m += '- ' + r.name + '\n';
+      });
+      m += '\n';
+    }
+
+    if (d.cta) m += '### Enjoyed This Episode?\n\n' + d.cta + '\n';
+    return m.trim();
+  }
+
+  function generatePlainText(d) {
+    if (!d.epTitle) return '';
+    const title = buildTitle(d);
+    const divider = '─'.repeat(40);
+    let t = '';
+    t += title.toUpperCase() + '\n' + divider + '\n\n';
+    if (d.intro) t += d.intro + '\n\n';
+    if (d.summary) t += d.summary + '\n\n';
+
+    if (d.guestName) {
+      t += 'ABOUT THE GUEST\n' + divider + '\n';
+      t += d.guestName;
+      if (d.guestTitleVal) t += ' — ' + d.guestTitleVal;
+      t += '\n';
+      if (d.guestWebsite) t += d.guestWebsite + '\n';
+      if (d.guestLinks.length) d.guestLinks.forEach(l => { t += l + '\n'; });
+      t += '\n';
+    }
+
+    if (d.topics.length) {
+      t += 'WHAT WE COVER\n' + divider + '\n';
+      d.topics.forEach(tp => { t += '• ' + tp + '\n'; });
+      t += '\n';
+    }
+
+    if (d.timestamps.length) {
+      t += 'EPISODE TIMESTAMPS\n' + divider + '\n';
+      d.timestamps.forEach(ts => { t += '[' + ts.time + '] ' + ts.label + '\n'; });
+      t += '\n';
+    }
+
+    if (d.resources.length) {
+      t += 'RESOURCES MENTIONED\n' + divider + '\n';
+      d.resources.forEach(r => {
+        t += '• ' + r.name;
+        if (r.url) t += ': ' + r.url;
+        t += '\n';
+      });
+      t += '\n';
+    }
+
+    if (d.cta) t += 'ENJOYED THIS EPISODE?\n' + divider + '\n' + d.cta + '\n';
+    return t.trim();
+  }
+
+  // ─── Main generate ────────────────────────────────────
+  function generate() {
+    const d = collect();
+    if (!d.epTitle) { showToast('Please enter an episode title'); return; }
+
+    outputs.html = generateHTML(d);
+    outputs.md = generateMarkdown(d);
+    outputs.txt = generatePlainText(d);
+
+    setOutput('html', outputs.html);
+    setOutput('md', outputs.md);
+    setOutput('txt', outputs.txt);
+  }
+
+  function setOutput(type, content) {
+    const el = document.getElementById('output-' + type);
+    const metaEl = document.getElementById('meta-' + type);
+    if (!el) return;
+    if (!content) {
+      el.textContent = 'No content generated.';
+      el.className = 'output-content empty';
+      if (metaEl) metaEl.style.display = 'none';
+      return;
+    }
+    el.textContent = content;
+    el.className = 'output-content';
+    if (metaEl) {
+      metaEl.style.display = 'flex';
+      const words = content.trim().split(/\s+/).length;
+      document.getElementById('words-' + type).textContent = words.toLocaleString();
+      document.getElementById('chars-' + type).textContent = content.length.toLocaleString();
+    }
+  }
+
+  // ─── Copy ─────────────────────────────────────────────
+  function copyOutput(type) {
+    const content = outputs[type];
+    if (!content) { showToast('Nothing to copy — generate first'); return; }
+    navigator.clipboard.writeText(content).then(() => {
+      const btn = document.querySelector('.copy-btn.' + type);
+      if (btn) {
+        btn.classList.add('copied');
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.textContent = type === 'html' ? 'Copy HTML' : type === 'md' ? 'Copy Markdown' : 'Copy Plain Text';
+        }, 2000);
+      }
+      showToast('Copied ' + type.toUpperCase() + ' to clipboard!');
+    }).catch(() => {
+      showToast('Copy failed — try Ctrl+A then Ctrl+C');
+    });
+  }
+
+  // ─── Helpers ──────────────────────────────────────────
+  function esc(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function escAttr(str) {
+    return (str || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+  }
+
+  init();
+</script>
+</body>
+</html>
