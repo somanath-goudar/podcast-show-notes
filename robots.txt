@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://podcast-show-notes.vercel.app/sitemap.xml
+Sitemap: https://podcast-show-notes-one.vercel.app/sitemap.xml
